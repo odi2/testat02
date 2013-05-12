@@ -61,6 +61,8 @@ struct APPLICATION_STATE
 	int nThreshold;
 	/*! @brief  the step counter */
 	unsigned int nStepCounter;
+	/*! @brief  the actual value of K (Threshold) */
+	uint8 actualK;
 };
 
 #endif /*TEMPLATE_IPC_H_*/

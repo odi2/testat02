@@ -38,7 +38,7 @@ void ProcessFrame(uint8 *pInputImg) {
 	} else {
 		/* this is the default case */
 		uint32 Hist[256];
-		uint8* p = data.u8TempImage[GRAYSCALE];
+		uint8* p = &data.u8TempImage[GRAYSCALE][0];
 		memset(Hist, 0, sizeof(Hist));
 		uint32 w0 = 0;
 		uint32 w1 = 0;
@@ -49,28 +49,30 @@ void ProcessFrame(uint8 *pInputImg) {
 		uint8 k_best = 0;
 		int i1,k,g;
 
-		/* a) loop over image */
+		// a) loop over image
 		for (i1=0;i1<siz;i1++)
 			Hist[p[i1]] += 1;
 
-		/* b) find best k */
+		// b) find best k
 		for (k = 0; k <= 255; k++) // main loop over K
 		{
-			for (g = 0; g <= k; g++) { // loop from 0 to K
+			for (g=0, w0=0, m0=0; g<=k; g++) { // loop from 0 to K
 				w0 += Hist[g];
 				m0 += Hist[g] * g;
 			}
-			for (g = k + 1; g <= 255; g++) { // loop from K+1 to 255
+			for (g=k+1, w1=0, m1=0; g<=255; g++) { // loop from K+1 to 255
 				w1 += Hist[g];
 				m1 += Hist[g] * g;
 			}
-			roh2_actual = w0 * w1 * (1 / w0 * m0 - 1 / w1 * m1) ^ 2;
+			roh2_actual = ((float)w0*w1) * ( (((float)m0/w0) - ((float)m1/w1)) * (((float)m0/w0) - ((float)m1/w1)) );
 			if (roh2_actual > roh2) // evaluate maximum value of roh for best K
 			{
 				roh2 = roh2_actual;
 				k_best = k;
 			}
 		}
+		// write actual value of 'K' to index.xhtml
+		data.ipc.state.actualK = k_best;
 
 		/* apply threshold value 'k' to threshold image */
 		for (r = 0; r < siz; r += nc)/* we strongly rely on the fact that them images have the same size */

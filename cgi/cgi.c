@@ -241,6 +241,7 @@ static void FormCGIResponse()
 	printf("exposureTime: %d\n", pAppState->nExposureTime);
 	printf("Threshold: %d\n", pAppState->nThreshold);
 	printf("Stepcounter: %d\n", pAppState->nStepCounter);
+	printf("ActualKValue: %d\n", pAppState->actualK);
 	printf("width: %d\n", OSC_CAM_MAX_IMAGE_WIDTH/2);
 	printf("height: %d\n", OSC_CAM_MAX_IMAGE_HEIGHT/2);
 	printf("ImageType: %u\n", pAppState->nImageType);
